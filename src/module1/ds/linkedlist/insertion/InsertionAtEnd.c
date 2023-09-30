@@ -1,19 +1,27 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
 
 struct Node {
     int i;
     struct Node *nextNodeLocation;
 };
 
-struct Node *insertionAtFirst(struct Node *headOfTheNode, int i) {
-    struct Node *modifiedFirstNode = (struct Node *) malloc(sizeof(struct Node));
-    modifiedFirstNode->i = i;
-    modifiedFirstNode->nextNodeLocation = headOfTheNode;
-    return modifiedFirstNode;
+struct Node *insertionAtEnd(struct Node *head, int newValue) {
+
+    struct Node *modifiedNode = (struct Node *) malloc(sizeof(struct Node *));
+    modifiedNode->i = newValue;
+    struct Node *existingNode = head;
+    while (existingNode->nextNodeLocation != NULL) {
+        existingNode = existingNode->nextNodeLocation;
+    }
+    if (existingNode->nextNodeLocation == NULL) {
+        existingNode->nextNodeLocation = modifiedNode;
+    }
+    modifiedNode->nextNodeLocation = NULL;
+    return head;
 }
 
-void printing_InsertionAtFirst_() {
+void printing_InsertionAtEnd_() {
 
     struct Node *first;
     struct Node *second;
@@ -31,7 +39,7 @@ void printing_InsertionAtFirst_() {
     third->nextNodeLocation = second;
     second->nextNodeLocation = NULL;
 
-    struct Node *modifiedData = insertionAtFirst(first, 45);
+    struct Node *modifiedData = insertionAtEnd(first, 45);
 
     while (modifiedData != NULL) {
         printf("%d\n", modifiedData->i);
@@ -39,14 +47,14 @@ void printing_InsertionAtFirst_() {
     }
 
     /*
-     45
      0
      2
      1
+     45
      * */
 }
 
 int main() {
-    printing_InsertionAtFirst_();
+    printing_InsertionAtEnd_();
     return 0;
 }
