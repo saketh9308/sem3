@@ -6,6 +6,27 @@ struct Node {
     struct Node *nextNodeLocation;
 };
 
+struct Node *insertAfter(int newValue, int afterIndex, struct Node *head) {
+
+    struct Node *newNode = (struct Node *) malloc(sizeof(struct Node));
+    struct Node *referenceNode = head;
+    int i = 0;
+    while (i < afterIndex) {
+        referenceNode = referenceNode->nextNodeLocation;
+        i++;
+    }
+    newNode->nextNodeLocation = referenceNode->nextNodeLocation;
+    newNode->i = newValue;
+    referenceNode->nextNodeLocation = newNode;
+    return head;
+    // when index is 2
+    //10
+    //20
+    //30
+    //45 --> newValue
+    //40
+}
+
 struct Node *insertionAtIndex(struct Node *startingOfNode, int index, int newValue) {
     struct Node *newNode = (struct Node *) malloc(sizeof(struct Node));
     struct Node *existingNode = startingOfNode;
@@ -20,6 +41,28 @@ struct Node *insertionAtIndex(struct Node *startingOfNode, int index, int newVal
     newNode->nextNodeLocation = existingNode->nextNodeLocation;
     existingNode->nextNodeLocation = newNode;
     return startingOfNode;
+}
+
+
+struct Node *insertBefore(int newValue, int afterIndex, struct Node *head) {
+
+    struct Node *newNode = (struct Node *) malloc(sizeof(struct Node));
+    struct Node *referenceNode = head;
+    int i = 0;
+    while (i < afterIndex - 2) {
+        referenceNode = referenceNode->nextNodeLocation;
+        i++;
+    }
+    newNode->nextNodeLocation = referenceNode->nextNodeLocation;
+    newNode->i = newValue;
+    referenceNode->nextNodeLocation = newNode;
+    return head;
+    // when index is 2
+    // 10
+    //45 --> newValue
+    //20
+    //30
+    //40
 }
 
 void printing_InsertionAtIndex_() {
