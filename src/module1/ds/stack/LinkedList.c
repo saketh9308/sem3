@@ -45,10 +45,15 @@ struct Node *popFromTheStack(struct Node *top) {
     }
 }
 
+void peekElement(struct Node *top) {
+    printf("Value of the peek element is: %d\n", top->i);
+}
+
 int main() {
     struct Node *topNode = NULL;
     struct Node *modifiedPushStack = pushIntoStack(4, topNode);
     topNode = modifiedPushStack;
+    peekElement(modifiedPushStack);
     while (modifiedPushStack != NULL) {
         printf("%d\n", modifiedPushStack->i);
         modifiedPushStack = modifiedPushStack->nextLocation;
