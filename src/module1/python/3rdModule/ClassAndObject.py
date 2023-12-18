@@ -1,3 +1,4 @@
+import copy
 """
 Simple example:
 
@@ -58,9 +59,15 @@ class ClassUsingSTR():
         return "Name of the person : {}\nAge of the person : {}".format(self.nameOfThePErson, self.ageOfThePerson)    
 
 classUsingSTR = ClassUsingSTR(age=100,name="sample text")
-print(classUsingSTR) # there is no need to call variables and then format them as strings, as __str__ is a string when this object is created.
+sampleCopy = copy.copy(classUsingSTR)
+print("printing from copied object ->\n{}".format(sampleCopy))
+print("printing using original object -> \n"+str(classUsingSTR)) # there is no need to call variables and then format them as strings, as __str__ is a string when this object is created.
 """
 Output:
+printing from copied object ->
+Name of the person : sample text
+Age of the person : 100
+printing using original object ->
 Name of the person : sample text
 Age of the person : 100
 """
