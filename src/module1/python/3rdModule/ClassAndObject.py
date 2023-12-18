@@ -83,3 +83,18 @@ del p1
 class Person:
   pass
 """
+
+
+"""
+Static method:
+"""
+
+"""
+- @staticmethod decorator is used to indicate that functionName is a static method
+"""
+class StaticSample:
+    @staticmethod
+    def functionName(): # "self" should not be used when using static methods
+        print("static method")
+
+StaticSample.functionName()  # static method      
