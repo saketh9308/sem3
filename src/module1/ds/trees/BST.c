@@ -93,12 +93,26 @@ bool isTreeBalanced(struct Node *node) {
            isTreeBalanced(node->rightChild);
 }
 
+struct Node *searchForANode(struct Node *node, int value) {
+    if (node == NULL || node->i == value) {
+        return node;
+    }
+
+    if (value < node->i) {
+        return searchForANode(node->leftChild, value);
+    }
+    if (value > node->i) {
+        return searchForANode(node->rightChild, value);
+    }
+}
+
 int main() {
     struct Node *rootNode = NULL;
     rootNode = insertDataInBST(rootNode);
     displayDetails(rootNode);
     inOrder(rootNode);
     printf("\nbalanced tree? :: %d", isTreeBalanced(rootNode));
+    printf("\nnode is at %d", searchForANode(rootNode, 42)->i);
     return 0;
 }
 /*
@@ -126,4 +140,5 @@ int main() {
     current node value in inorder = 44
 
     balanced tree? :: 1
+    node is at 42
  * */
