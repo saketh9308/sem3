@@ -191,7 +191,7 @@ int main() {
     printf("\ndoes this node exist? %d", doesThisNodeExist(rootNode, 42));
     return 0;
 }
-/*
+/**
  Output:-
     before deleting:
     Current parent node is = 8, contains 3 as the left child
@@ -228,4 +228,4 @@ int main() {
     42 doesn't exist
     node is at 8
     does this node exist? 0
- * */
+ **/
