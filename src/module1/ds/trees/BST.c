@@ -6,14 +6,14 @@ struct Node {
     int i;
     struct Node *leftChild;
     struct Node *rightChild;
-    int heightOfTheNode;
+    int heightOfTheTree; /// independent of the Node
 };
 
 int heightOfTheTree(struct Node *node) {
     if (node == NULL) {
         return 0;
     } else {
-        return node->heightOfTheNode;
+        return node->heightOfTheTree;
     }
 }
 
@@ -27,7 +27,7 @@ struct Node *insertANodeInBST(struct Node *node, int currentValue) {
         node->i = currentValue;
         node->leftChild = NULL;
         node->rightChild = NULL;
-        node->heightOfTheNode = 0;
+        node->heightOfTheTree = 0;
         return node;
     }
 
@@ -41,18 +41,18 @@ struct Node *insertANodeInBST(struct Node *node, int currentValue) {
         node->rightChild = insertANodeInBST(node->rightChild, currentValue);
     }
     int _maxValue = maxValue(heightOfTheTree(node->leftChild), heightOfTheTree(node->rightChild)) + 1;
-    node->heightOfTheNode = _maxValue;
+    node->heightOfTheTree = _maxValue;
     return node;
 }
 
 struct Node *insertDataInBST(struct Node *node) {
-    node = insertANodeInBST(node, 5);
-    node = insertANodeInBST(node, 2);
-    node = insertANodeInBST(node, 7);
+    node = insertANodeInBST(node, 8);
+    node = insertANodeInBST(node, 3);
     node = insertANodeInBST(node, 1);
-    node = insertANodeInBST(node, 4);
-    node = insertANodeInBST(node, 42);
-    node = insertANodeInBST(node, 44);
+    node = insertANodeInBST(node, 6);
+    node = insertANodeInBST(node, 10);
+    node = insertANodeInBST(node, 14);
+    node = insertANodeInBST(node, 7);
     return node;
 }
 
@@ -74,15 +74,15 @@ void displayDetails(struct Node *node) {
     displayDetails(node->rightChild);
 }
 
-struct Node *inOrder(struct Node *node) {
+void inOrder(struct Node *node) {
     if (node == NULL) {
-        return 0;
+        return;
     }
     inOrder(node->leftChild);
-    printf("current node value in inorder = %d\n", node->i);
+    printf("%d ", node->i);
     inOrder(node->rightChild);
-    return node;
 }
+
 
 bool isTreeBalanced(struct Node *node) {
     if (node == NULL) {
@@ -93,7 +93,28 @@ bool isTreeBalanced(struct Node *node) {
            isTreeBalanced(node->rightChild);
 }
 
+bool doesThisNodeExist(struct Node *node, int value) {
+    if (node == NULL) {
+        return false;
+    }
+    if (node->i == value) {
+        return true;
+    }
+
+    if (value < node->i) {
+        return doesThisNodeExist(node->leftChild, value);
+    }
+
+    if (value > node->i) {
+        return doesThisNodeExist(node->rightChild, value);
+    }
+}
+
 struct Node *searchForANode(struct Node *node, int value) {
+    if (!doesThisNodeExist(node, value)) {
+        printf("\n%d doesn't exist", value);
+        return node;
+    }
     if (node == NULL || node->i == value) {
         return node;
     }
@@ -106,39 +127,105 @@ struct Node *searchForANode(struct Node *node, int value) {
     }
 }
 
+
+struct Node *deleteANode(struct Node *node, int value) {
+    if (!doesThisNodeExist(node, value) || node == NULL) {
+        printf("\n%d doesn't exists in the data", value);
+        return NULL;
+    }
+
+    if (value < node->i) {
+        node->leftChild = deleteANode(node->leftChild, value);
+    } else if (value > node->i) {
+        node->rightChild = deleteANode(node->rightChild, value);
+    } else {
+        // case 1: node with no children
+        if (node->leftChild == NULL && node->rightChild == NULL) {
+            free(node);
+            printf("\ndeleting based on node with no children case");
+            return NULL;
+        }
+
+        // case 2: node with a single child
+        if (node->rightChild == NULL) {
+            struct Node *refNode = node->leftChild;
+            free(node);
+            printf("\ndeleting based on node with a single leftChild case");
+            return refNode;
+        } else if (node->leftChild == NULL) {
+            struct Node *refNode = node->rightChild;
+            free(node);
+            printf("\ndeleting based on node with a single rightChild case");
+            return refNode;
+        }
+
+        // case 3: node with two children (logic is based on predecessor value)
+        struct Node *delNode = node;
+        if (node->rightChild != NULL && node->leftChild != NULL) {
+            delNode = delNode->leftChild;
+            while (delNode->rightChild != NULL) {
+                delNode = delNode->rightChild;
+            }
+            node->i = delNode->i;
+            free(delNode);
+            node->leftChild = NULL;
+            printf("\ndeleting based on node with two children (logic is based on predecessor value)");
+            return node;
+        }
+    }
+    return node;
+}
+
 int main() {
     struct Node *rootNode = NULL;
     rootNode = insertDataInBST(rootNode);
+    printf("before deleting:\n");
+    displayDetails(rootNode);
+    inOrder(rootNode);
+    deleteANode(rootNode, 3);
+    printf("\nafter deleting:\n");
     displayDetails(rootNode);
     inOrder(rootNode);
     printf("\nbalanced tree? :: %d", isTreeBalanced(rootNode));
     printf("\nnode is at %d", searchForANode(rootNode, 42)->i);
+    printf("\ndoes this node exist? %d", doesThisNodeExist(rootNode, 42));
     return 0;
 }
 /*
  Output:-
-    Current parent node is = 5, contains 2 as the left child
-    Current parent node is = 5, contains 7 as the right child
-    Current parent node is = 2, contains 1 as the left child
-    Current parent node is = 2, contains 4 as the right child
+    before deleting:
+    Current parent node is = 8, contains 3 as the left child
+    Current parent node is = 8, contains 10 as the right child
+    Current parent node is = 3, contains 1 as the left child
+    Current parent node is = 3, contains 6 as the right child
     Current parent node is = 1, contains NULL as the left child
     Current parent node is = 1, contains NULL as the right child
-    Current parent node is = 4, contains NULL as the left child
-    Current parent node is = 4, contains NULL as the right child
+    Current parent node is = 6, contains NULL as the left child
+    Current parent node is = 6, contains 7 as the right child
     Current parent node is = 7, contains NULL as the left child
-    Current parent node is = 7, contains 42 as the right child
-    Current parent node is = 42, contains NULL as the left child
-    Current parent node is = 42, contains 44 as the right child
-    Current parent node is = 44, contains NULL as the left child
-    Current parent node is = 44, contains NULL as the right child
-    current node value in inorder = 1
-    current node value in inorder = 2
-    current node value in inorder = 4
-    current node value in inorder = 5
-    current node value in inorder = 7
-    current node value in inorder = 42
-    current node value in inorder = 44
-
+    Current parent node is = 7, contains NULL as the right child
+    Current parent node is = 10, contains NULL as the left child
+    Current parent node is = 10, contains 14 as the right child
+    Current parent node is = 14, contains NULL as the left child
+    Current parent node is = 14, contains NULL as the right child
+    1 3 6 7 8 10 14
+    deleting based on node with two children (logic is based on predecessor value)
+    after deleting:
+    Current parent node is = 8, contains 1 as the left child
+    Current parent node is = 8, contains 10 as the right child
+    Current parent node is = 1, contains NULL as the left child
+    Current parent node is = 1, contains 6 as the right child
+    Current parent node is = 6, contains NULL as the left child
+    Current parent node is = 6, contains 7 as the right child
+    Current parent node is = 7, contains NULL as the left child
+    Current parent node is = 7, contains NULL as the right child
+    Current parent node is = 10, contains NULL as the left child
+    Current parent node is = 10, contains 14 as the right child
+    Current parent node is = 14, contains NULL as the left child
+    Current parent node is = 14, contains NULL as the right child
+    1 6 7 8 10 14
     balanced tree? :: 1
-    node is at 42
+    42 doesn't exist
+    node is at 8
+    does this node exist? 0
  * */
